@@ -8,14 +8,13 @@ builder.Services.AddControllers();
 // Add CORS support
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowAll",
-        policyBuilder =>
-        {
-            policyBuilder
-                .AllowAnyOrigin()
-                .AllowAnyMethod()
-                .AllowAnyHeader();
-        });
+    options.AddPolicy("AllowReactApp",
+        policyBuilder => policyBuilder
+            .WithOrigins("http://localhost:3000") // Your React app's URL
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials()
+    );
 });
 
 // Configure HTTP Logging

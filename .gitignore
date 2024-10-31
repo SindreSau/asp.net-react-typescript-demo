@@ -8,3 +8,5 @@ riderModule.iml
 *.sln.iml
 
 logs/
+
+node_modules/

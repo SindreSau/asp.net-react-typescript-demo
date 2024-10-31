@@ -1,0 +1,4 @@
+/* Prevent layout shift */
+html {
+    overflow-y: scroll;
+}

@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
+using Microsoft.AspNetCore.Cors;
 
 namespace api.Controllers;
 
 [ApiController]
+[EnableCors("AllowReactApp")]
 [Route("api/[controller]")]
 public class GameController : ControllerBase
 {
@@ -13,8 +15,10 @@ public class GameController : ControllerBase
         {
             Id = 1,
             Name = "The Legend of Zelda: Breath of the Wild",
-            Description = "Step into a world of discovery, exploration, and adventure in The Legend of Zelda: Breath of the Wild.",
-            Image_url = "https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_656/b_white/f_auto/q_auto/ncom/software/switch/70010000000025/7137262b5a64d921e193653f8aa0b722925abc5680380ca0ea12dd11c2dc42b1",
+            Description =
+                "Step into a world of discovery, exploration, and adventure in The Legend of Zelda: Breath of the Wild.",
+            Image_url =
+                "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000000025/7137262b5a64d921e193653f8aa0b722925abc5680380ca0e18a5cfd91697f58",
             Metascore = 97,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -24,7 +28,7 @@ public class GameController : ControllerBase
             Id = 2,
             Name = "Red Dead Redemption 2",
             Description = "An epic tale of life in America's unforgiving heartland.",
-            Image_url = "https://image.api.playstation.com/vulcan/ap/rnd/202208/0921/dR9KJAKDW2izPbptHQbh3rnj.png",
+            Image_url = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/capsule_616x353.jpg?t=1720558643",
             Metascore = 97,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -33,7 +37,8 @@ public class GameController : ControllerBase
         {
             Id = 3,
             Name = "God of War Ragnarök",
-            Description = "Embark on an epic and heartfelt journey as Kratos and Atreus struggle with holding on and letting go.",
+            Description =
+                "Embark on an epic and heartfelt journey as Kratos and Atreus struggle with holding on and letting go.",
             Image_url = "https://image.api.playstation.com/vulcan/ap/rnd/202207/1210/4xJ8XB3bi888QTLZYdl7Oi0s.png",
             Metascore = 94,
             CreatedAt = DateTime.Now,
@@ -43,7 +48,8 @@ public class GameController : ControllerBase
         {
             Id = 4,
             Name = "Elden Ring",
-            Description = "The Golden Order has been broken. Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring.",
+            Description =
+                "The Golden Order has been broken. Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring.",
             Image_url = "https://image.api.playstation.com/vulcan/ap/rnd/202110/2000/phvVT0qZfcRms5qDAk0SI3CM.png",
             Metascore = 96,
             CreatedAt = DateTime.Now,
@@ -54,8 +60,52 @@ public class GameController : ControllerBase
             Id = 5,
             Name = "Super Mario Odyssey",
             Description = "Join Mario on a massive, globe-trotting 3D adventure!",
-            Image_url = "https://assets.nintendo.com/image/upload/ar_16:9,c_lpad,w_656/b_white/f_auto/q_auto/ncom/software/switch/70010000001130/c42553b4fd0312c31e70ec7468c6c9bccd739f340152925b9600631f2d29f67f",
+            Image_url =
+                "https://assets.nintendo.com/image/upload/c_fill,w_1200/q_auto:best/f_auto/dpr_2.0/ncom/software/switch/70010000001130/c42553b4fd0312c31e70ec7468c6c9bccd739f340152925b9600631f2d29f8b5",
             Metascore = 97,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        },
+        new GameModel
+        {
+            Id = 6,
+            Name = "Cyberpunk 2077",
+            Description = "Cyberpunk 2077 is an open-world, action-adventure story set in Night City.",
+            Image_url = "https://image.api.playstation.com/vulcan/ap/rnd/202311/2812/ae84720b553c4ce943e9c342621b60f198beda0dbf533e21.jpg",
+            Metascore = 76,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        },
+        new GameModel
+        {
+            Id = 7,
+            Name = "Fallout 76",
+            Description =
+                "Bethesda Game Studios welcomes you to Fallout 76, the online prequel where every surviving human is a real person.",
+            Image_url = "https://cdn-ext.fanatical.com/production/product/1280x720/db6b6224-c847-4927-b31e-553a69ecf50f.jpeg",
+            Metascore = 52,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        },
+        new GameModel
+        {
+            Id = 9,
+            Name = "Stardew Valley",
+            Description =
+                "You've inherited your grandfather's old farm plot in Stardew Valley. Armed with hand-me-down tools and a few coins, you set out to begin your new life.",
+            Image_url = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/413150/capsule_616x353.jpg?t=1711128146",
+            Metascore = 89,
+            CreatedAt = DateTime.Now,
+            UpdatedAt = DateTime.Now
+        },
+        new GameModel
+        {
+            Id = 10,
+            Name = "Anthem",
+            Description =
+                "Anthem is a shared-world action-RPG where players delve into a vast world teeming with amazing technology and forgotten treasures.",
+            Image_url = "https://media.contentapi.ea.com/content/dam/eacom/en-us/migrated-images/2017/06/anthem-dylan.jpg.adapt.crop191x100.1200w.jpg",
+            Metascore = 45,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         }
@@ -77,6 +127,7 @@ public class GameController : ControllerBase
         {
             return NotFound();
         }
+
         return Ok(game);
     }
 
