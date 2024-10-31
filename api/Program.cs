@@ -1,9 +1,12 @@
+using api.Services;
 using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddScoped<IGameSearchService, GameSearchService>();
 
 // Add CORS support
 builder.Services.AddCors(options =>

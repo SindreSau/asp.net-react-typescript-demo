@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using api.Models;
+using api.Services;
 using Microsoft.AspNetCore.Cors;
 
 namespace api.Controllers;
@@ -9,6 +10,8 @@ namespace api.Controllers;
 [Route("api/[controller]")]
 public class GameController : ControllerBase
 {
+    private readonly IGameSearchService _searchService;
+
     private static readonly List<GameModel> _games = new()
     {
         new GameModel
@@ -28,7 +31,8 @@ public class GameController : ControllerBase
             Id = 2,
             Name = "Red Dead Redemption 2",
             Description = "An epic tale of life in America's unforgiving heartland.",
-            Image_url = "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/capsule_616x353.jpg?t=1720558643",
+            Image_url =
+                "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1174180/capsule_616x353.jpg?t=1720558643",
             Metascore = 97,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -71,7 +75,8 @@ public class GameController : ControllerBase
             Id = 6,
             Name = "Cyberpunk 2077",
             Description = "Cyberpunk 2077 is an open-world, action-adventure story set in Night City.",
-            Image_url = "https://image.api.playstation.com/vulcan/ap/rnd/202311/2812/ae84720b553c4ce943e9c342621b60f198beda0dbf533e21.jpg",
+            Image_url =
+                "https://image.api.playstation.com/vulcan/ap/rnd/202311/2812/ae84720b553c4ce943e9c342621b60f198beda0dbf533e21.jpg",
             Metascore = 76,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -82,7 +87,8 @@ public class GameController : ControllerBase
             Name = "Fallout 76",
             Description =
                 "Bethesda Game Studios welcomes you to Fallout 76, the online prequel where every surviving human is a real person.",
-            Image_url = "https://cdn-ext.fanatical.com/production/product/1280x720/db6b6224-c847-4927-b31e-553a69ecf50f.jpeg",
+            Image_url =
+                "https://cdn-ext.fanatical.com/production/product/1280x720/db6b6224-c847-4927-b31e-553a69ecf50f.jpeg",
             Metascore = 52,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -93,7 +99,8 @@ public class GameController : ControllerBase
             Name = "Stardew Valley",
             Description =
                 "You've inherited your grandfather's old farm plot in Stardew Valley. Armed with hand-me-down tools and a few coins, you set out to begin your new life.",
-            Image_url = "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/413150/capsule_616x353.jpg?t=1711128146",
+            Image_url =
+                "https://shared.fastly.steamstatic.com/store_item_assets/steam/apps/413150/capsule_616x353.jpg?t=1711128146",
             Metascore = 89,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
@@ -104,12 +111,18 @@ public class GameController : ControllerBase
             Name = "Anthem",
             Description =
                 "Anthem is a shared-world action-RPG where players delve into a vast world teeming with amazing technology and forgotten treasures.",
-            Image_url = "https://media.contentapi.ea.com/content/dam/eacom/en-us/migrated-images/2017/06/anthem-dylan.jpg.adapt.crop191x100.1200w.jpg",
+            Image_url =
+                "https://media.contentapi.ea.com/content/dam/eacom/en-us/migrated-images/2017/06/anthem-dylan.jpg.adapt.crop191x100.1200w.jpg",
             Metascore = 45,
             CreatedAt = DateTime.Now,
             UpdatedAt = DateTime.Now
         }
     };
+
+    public GameController(IGameSearchService searchService)
+    {
+        _searchService = searchService;
+    }
 
     // GET: api/game
     [HttpGet]
@@ -175,17 +188,11 @@ public class GameController : ControllerBase
         return NoContent();
     }
 
-    // GET: api/game/search?name=zelda
     [HttpGet("search")]
-    public ActionResult<IEnumerable<GameModel>> SearchGames([FromQuery] string? name)
+    public ActionResult<IEnumerable<GameModel>> SearchGames([FromQuery] string? query)
     {
-        if (string.IsNullOrWhiteSpace(name))
-        {
-            return Ok(_games);
-        }
-
-        var games = _games.Where(g =>
-            g.Name.Contains(name, StringComparison.OrdinalIgnoreCase));
-        return Ok(games);
+        if (query == null) return BadRequest();
+        var results = _searchService.Search(_games, query);
+        return Ok(results);
     }
 }
