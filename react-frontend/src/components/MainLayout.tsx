@@ -41,6 +41,13 @@ export const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
                                 </li>
                                 <li className='nav-item'>
                                     <NavLink
+                                        to='/react-query'
+                                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                                        React Query
+                                    </NavLink>
+                                </li>
+                                <li className='nav-item'>
+                                    <NavLink
                                         to='/about'
                                         className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
                                         About

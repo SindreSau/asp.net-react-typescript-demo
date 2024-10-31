@@ -1,6 +1,7 @@
 import axios from './axios';
 import {Game} from "../types/game";
 
+
 export const gameService = {
     getAll: async () => {
         // No need to:
@@ -17,7 +18,7 @@ export const gameService = {
         // - Query string construction
         // - Response parsing
         const { data } = await axios.get<Game[]>(`/game/search`, {
-            params: { name: query }
+            params: { query }
         });
         return data;
     }
