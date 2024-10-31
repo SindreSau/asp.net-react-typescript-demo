@@ -1,20 +1,11 @@
-// GameList.tsx
-import React, {useEffect, useState, useCallback} from 'react';
-import {useSearchParams} from 'react-router-dom';
-import {SearchForm} from './SearchForm';
-import {GameCard} from './GameCard';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { SearchForm } from './SearchForm';
+import { GameCard } from './GameCard';
+import { gameService } from '../../services/gameService';
+import { Game } from '../../types/game';
 
-interface Game {
-    id: number;
-    name: string;
-    description: string;
-    image_url: string;
-    metascore: number;
-    createdAt: string;
-    updatedAt: string;
-}
-
-export const GameList: React.FC = () => {
+export const GameListAxios: React.FC = () => {
     const [searchParams, setSearchParams] = useSearchParams();
     const [games, setGames] = useState<Game[]>([]);
     const [initialLoading, setInitialLoading] = useState(true);
@@ -27,16 +18,10 @@ export const GameList: React.FC = () => {
                 setSearchLoading(true);
             }
 
-            const url = search
-                ? `https://localhost:7080/api/game/search?name=${encodeURIComponent(search)}`
-                : 'https://localhost:7080/api/game';
+            const data = search
+                ? await gameService.search(search)
+                : await gameService.getAll();
 
-            const response = await fetch(url);
-
-            if (!response.ok) {
-                throw new Error('Failed to fetch games');
-            }
-            const data = await response.json();
             setGames(data);
         } catch (err) {
             setError(err instanceof Error ? err.message : 'An error occurred');
@@ -46,22 +31,19 @@ export const GameList: React.FC = () => {
         }
     }, [initialLoading]);
 
-    // Handle search via URL params
     const handleSearch = (searchTerm: string) => {
         if (searchTerm) {
-            setSearchParams({q: searchTerm});
+            setSearchParams({ q: searchTerm });
         } else {
             setSearchParams({});
         }
     };
 
-    // Initial load - check URL for search term
     useEffect(() => {
         const searchTerm = searchParams.get('q') || '';
         fetchGames(searchTerm).then(() => {
-                setInitialLoading(false);
-            }
-        );
+            setInitialLoading(false);
+        });
     }, [searchParams, fetchGames]);
 
     if (error) {
@@ -90,7 +72,7 @@ export const GameList: React.FC = () => {
                     <div className='row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4'>
                         {games.map((game) => (
                             <div key={game.id} className='col'>
-                                <GameCard game={game}/>
+                                <GameCard game={game} />
                             </div>
                         ))}
                     </div>

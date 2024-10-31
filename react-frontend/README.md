@@ -1,46 +1,161 @@
-# Getting Started with Create React App
+# Game Library App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A modern game library application that lets users browse, search, and manage game information with a React front end and ASP.NET Core backend.
 
-## Available Scripts
+## Technology Stack
 
-In the project directory, you can run:
+- **Frontend**: React, TypeScript, Axios
+- **Backend**: ASP.NET Core
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+### Project Structure
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+```plaintext
+├── README.md
+├── package-lock.json
+├── package.json
+├── public
+│   ├── favicon.ico
+│   ├── index.html
+│   ├── logo192.png
+│   ├── logo512.png
+│   ├── manifest.json
+│   └── robots.txt
+├── src
+│   ├── App.css
+│   ├── App.tsx
+│   ├── components
+│   │   ├── MainLayout.tsx
+│   │   └── games
+│   ├── config
+│   │   └── api.ts // API configuration, timeout and baseURL
+│   ├── index.tsx
+│   ├── pages
+│   │   ├── About.tsx
+│   │   ├── Axios.tsx
+│   │   └── Home.tsx
+│   ├── react-app-env.d.ts
+│   ├── services
+│   │   ├── axios.ts // Axios instance and setup
+│   │   └── gameService.ts // Game service with api calls
+│   └── types
+│       └── game.ts
+└── tsconfig.json
+```
 
-### `npm test`
+## API Integration
+### Why Axios?
+We use Axios over the native Fetch API for multiple reasons:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Automatic JSON Transformation: Axios provides JSON data automatically, eliminating the need for .json() calls.
+- Better Error Handling: It rejects requests with 4xx/5xx status codes and includes detailed error information.
+- Interceptors: Enables global request/response handling, centralized error handling, and auth token management.
+- Simplified API Calls: Cleaner syntax and centralized configurations.
 
-### `npm run build`
+### API Configuration
+A centralized API configuration keeps the code clean and consistent:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```typescript
+// src/config/api.ts
+export const API_CONFIG = {
+baseURL: process.env.REACT_APP_API_URL,
+timeout: 5000,
+};
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Service Layer
+API calls are organized within service modules for easy maintenance:
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+```typescript
 
-### `npm run eject`
+// src/services/gameService.ts
+import axios from './axios';
+import { Game } from '../types/game';
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+export const gameService = {
+getAll: async () => {
+const { data } = await axios.get<Game[]>('/game');
+return data;
+},
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+    search: async (query: string) => {
+        const { data } = await axios.get<Game[]>('/game/search', {
+            params: { name: query }
+        });
+        return data;
+    }
+};
+```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+## ASP.NET Core Integration
+### CORS Configuration
+Your ASP.NET Core backend needs this CORS setup to allow requests from the React frontend:
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+```csharp
 
-## Learn More
+// Program.cs
+builder.Services.AddCors(options =>
+{
+options.AddPolicy("AllowReactApp",
+builder => builder
+.WithOrigins("http://localhost:3000")
+.AllowAnyHeader()
+.AllowAnyMethod()
+);
+});
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+app.UseCors("AllowReactApp");
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Environment Setup
+Use different API URLs for different environments:
+
+```env
+
+# .env.development
+REACT_APP_API_URL=https://localhost:7080/api
+
+# .env.production
+REACT_APP_API_URL=https://api.yoursite.com/api
+```
+
+## Features
+- ✅ Game listing
+- ✅ Search functionality
+- ✅ Responsive design
+- ✅ Loading states
+- ✅ Error handling
+- ✅ URL-based search parameters
+- ✅ TypeScript type safety
+
+
+## Component Usage
+### GameList Example
+The following example component displays a list of games:
+
+```typescript
+
+import { useEffect, useState } from 'react';
+import { gameService } from '../services/gameService';
+import { Game } from '../types/game';
+
+const GameList = () => {
+const [games, setGames] = useState<Game[]>([]);
+const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        gameService.getAll()
+            .then(data => {
+                setGames(data);
+                setLoading(false);
+            })
+            .catch(error => {
+                console.error('Failed to fetch games:', error);
+                setLoading(false);
+            });
+    }, []);
+
+    // Component JSX...
+};
+```

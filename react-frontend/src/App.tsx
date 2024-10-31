@@ -4,6 +4,7 @@ import { MainLayout } from './components/MainLayout';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import Home from './pages/Home';
 import About from './pages/About';
+import Axios from "./pages/Axios";
 
 function App() {
     return (
@@ -11,6 +12,7 @@ function App() {
             <Routes>
                 <Route path='/' element={<MainLayout />}>
                     <Route index element={<Home />} />
+                    <Route path='axios' element={<Axios />} />
                     <Route path='about' element={<About />} />
                 </Route>
             </Routes>
